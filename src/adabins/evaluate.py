@@ -8,10 +8,10 @@ import torch.nn as nn
 from PIL import Image
 from tqdm import tqdm
 
-import model_io
-from dataloader import DepthDataLoader
-from models import UnetAdaptiveBins
-from utils import RunningAverageDict
+from . import model_io
+from .dataloader import DepthDataLoader
+from .models import UnetAdaptiveBins
+from .utils import RunningAverageDict
 
 
 def compute_errors(gt, pred):
