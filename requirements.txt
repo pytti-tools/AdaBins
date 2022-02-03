@@ -2,3 +2,4 @@
 matplotlib
 pillow
 scipy
+loguru
