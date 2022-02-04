@@ -14,12 +14,12 @@ import torch.utils.data.distributed
 import wandb
 from tqdm import tqdm
 
-import model_io
-import models
-import utils
-from dataloader import DepthDataLoader
-from loss import SILogLoss, BinsChamferLoss
-from utils import RunningAverage, colorize
+from . import model_io
+from . import models
+from . import utils
+from .dataloader import DepthDataLoader
+from .loss import SILogLoss, BinsChamferLoss
+from .utils import RunningAverage, colorize
 
 # os.environ['WANDB_MODE'] = 'dryrun'
 PROJECT = "MDE-AdaBins"

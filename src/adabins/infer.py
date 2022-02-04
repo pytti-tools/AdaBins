@@ -1,6 +1,8 @@
 import glob
 import os
+from pathlib import Path
 
+from loguru import logger
 import numpy as np
 import torch
 import torch.nn as nn
@@ -8,9 +10,9 @@ from PIL import Image
 from torchvision import transforms
 from tqdm import tqdm
 
-import model_io
-import utils
-from models import UnetAdaptiveBins
+from . import model_io
+from . import utils
+from .models import UnetAdaptiveBins
 
 
 def _is_pil_image(img):
@@ -64,7 +66,20 @@ class ToTensor(object):
 
 
 class InferenceHelper:
-    def __init__(self, dataset='nyu', device='cuda:0'):
+    def __init__(self, 
+                 pretrained_path_base = "./pretrained",
+                 #pretrained_path="./pretrained/AdaBins_nyu.pt",
+                 pretrained_path=None,
+                 dataset='nyu', # this doesn't actually get used now, just leaving it to keep stuff from breaking
+                 device='cuda:0'
+                 ):
+        if pretrained_path is not None:
+            dataset = Path(pretrained_path).stem.split('_')[-1]
+        else:
+            assert dataset is not None
+            pretrained_path = str(Path(pretrained_path_base) / f"AdaBins_{dataset}.pt" )
+        logger.debug(pretrained_path)
+        self.pretrained_path = pretrained_path
         self.toTensor = ToTensor()
         self.device = device
         if dataset == 'nyu':
@@ -72,13 +87,13 @@ class InferenceHelper:
             self.max_depth = 10
             self.saving_factor = 1000  # used to save in 16 bit
             model = UnetAdaptiveBins.build(n_bins=256, min_val=self.min_depth, max_val=self.max_depth)
-            pretrained_path = "./pretrained/AdaBins_nyu.pt"
+            #pretrained_path = "./pretrained/AdaBins_nyu.pt"
         elif dataset == 'kitti':
             self.min_depth = 1e-3
             self.max_depth = 80
             self.saving_factor = 256
             model = UnetAdaptiveBins.build(n_bins=256, min_val=self.min_depth, max_val=self.max_depth)
-            pretrained_path = "./pretrained/AdaBins_kitti.pt"
+            #pretrained_path = "./pretrained/AdaBins_kitti.pt"
         else:
             raise ValueError("dataset can be either 'nyu' or 'kitti' but got {}".format(dataset))
 
