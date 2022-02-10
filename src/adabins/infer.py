@@ -67,12 +67,12 @@ class ToTensor(object):
 
 class InferenceHelper:
     def __init__(self, 
-                 pretrained_path_base = "./pretrained",
-                 #pretrained_path="./pretrained/AdaBins_nyu.pt",
+                 pretrained_path_base = os.path.expanduser("~/.cache/adabins"), 
                  pretrained_path=None,
                  dataset='nyu', # this doesn't actually get used now, just leaving it to keep stuff from breaking
                  device='cuda:0'
                  ):
+        self.pretrained_path_base = pretrained_path_base
         if pretrained_path is not None:
             dataset = Path(pretrained_path).stem.split('_')[-1]
         else:
