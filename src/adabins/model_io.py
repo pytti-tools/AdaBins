@@ -8,6 +8,10 @@ def dl_adabins(dest=None, is_retry=False):
     logger.debug("Attempting to fetch AdaBins pretrained weights...")
     if not dest:
         dest = os.path.expanduser('~/.cache/adabins/')
+    # get your shit together gdown. I should shoot them a PR to fix this silly behavior...
+    if not dest.endswith(os.path.sep):
+        dest += os.path.sep
+
     logger.debug(f"using destination path: {dest}")
     url1 = "https://drive.google.com/uc?id=1lvyZZbC9NLcS8a__YPcUP7rDiIpbRpoF"
     url2 = "https://drive.google.com/uc?id=1zgGJrkFkJbRouqMaWArXE4WF_rhj-pxW"
@@ -15,6 +19,7 @@ def dl_adabins(dest=None, is_retry=False):
     # might need to convert folder path to local file system convention. 
     # gdown checks if path denotes a folder by checking if string terminates with os.path.sep
     # https://github.com/wkentaro/gdown/blob/main/gdown/download.py#L196-L200
+    # ... yup, this caused a problem. Called it.
     url = url1 if not is_retry else url2
     logger.debug(f"downloading from: {url}")
     # to do: add MD5 hash confirmation
