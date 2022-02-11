@@ -1,12 +1,14 @@
 import os
 
+from loguru import logger
+import gdown
 import torch
 
-import gdown
-
 def dl_adabins(dest=None, is_retry=False):
+    logger.debug("Attempting to fetch AdaBins pretrained weights...")
     if not dest:
         dest = os.path.expanduser('~/.cache/adabins/')
+    logger.debug(f"using destination path: {dest}")
     url1 = "https://drive.google.com/uc?id=1lvyZZbC9NLcS8a__YPcUP7rDiIpbRpoF"
     url2 = "https://drive.google.com/uc?id=1zgGJrkFkJbRouqMaWArXE4WF_rhj-pxW"
     # if folder does not exist, gdown will create it.
@@ -14,8 +16,10 @@ def dl_adabins(dest=None, is_retry=False):
     # gdown checks if path denotes a folder by checking if string terminates with os.path.sep
     # https://github.com/wkentaro/gdown/blob/main/gdown/download.py#L196-L200
     url = url1 if not is_retry else url2
+    logger.debug(f"downloading from: {url}")
     # to do: add MD5 hash confirmation
     response = gdown.download(url, dest)
+    logger.debug(f"gdown response: {response}")
     return response
 
 def save_weights(model, filename, path="./saved_models"):
