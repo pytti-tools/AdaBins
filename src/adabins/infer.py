@@ -80,6 +80,9 @@ class InferenceHelper:
             pretrained_path = str(Path(pretrained_path_base) / f"AdaBins_{dataset}.pt" )
         logger.debug(pretrained_path)
         self.pretrained_path = pretrained_path
+
+        self.dl_if_not_exists()
+
         self.toTensor = ToTensor()
         self.device = device
         if dataset == 'nyu':
@@ -101,6 +104,18 @@ class InferenceHelper:
         model.eval()
         self.model = model.to(self.device)
 
+    def dl_if_not_exists(self):
+        """
+        Checks if AdaBins is in expected location, attempts to download it if not.
+        """
+        success=lambda : os.path.exists(self.pretrained_path)
+
+        if not success():
+            model_io.dl_adabins(dest=self.pretrained_path_base, is_retry=False)
+        if not success():
+            model_io.dl_adabins(dest=self.pretrained_path_base, is_retry=True)
+        return success()
+    
     @torch.no_grad()
     def predict_pil(self, pil_image, visualized=False):
         # pil_image = pil_image.resize((640, 480))
