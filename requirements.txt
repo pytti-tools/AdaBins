@@ -3,3 +3,4 @@ matplotlib
 pillow
 scipy
 loguru
+huggingface_hub
